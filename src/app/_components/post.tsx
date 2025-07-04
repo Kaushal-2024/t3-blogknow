@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "~/trpc/react";
+import Image from "next/image";
 
 export function PostList() {
   const utils = api.useUtils();
@@ -169,7 +170,7 @@ export function PostList() {
               placeholder="https://example.com/image.jpg"
               value={imageUrl}
               onChange={e => setImageUrl(e.target.value)}
-              className="w-full rounded-xl bg-white/10 px-4 py-3 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 placeholder-white/50"
+              className="w-1 rounded-xl bg-white/10 px-4 py-3 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-200 placeholder-white/50"
             />
           </div>
 
@@ -203,7 +204,7 @@ export function PostList() {
 
       {/* Posts List */}
       <div className="space-y-6">
-        <h3 className="text-2xl font-bold text-white text-center mb-8 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+        <h3 className="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
           All Posts
         </h3>
         
@@ -215,6 +216,7 @@ export function PostList() {
         ) : posts && posts.length > 0 ? (
           <div className="grid gap-6">
             {posts.map((postData) => {
+              console.log("Post Data:", postData);
               const post = postData.post;
               const user = postData.user;
               return (
@@ -223,16 +225,18 @@ export function PostList() {
                   <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/10">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-sm">{user.name.charAt(0).toUpperCase()}</span>
+                        {/* <span className="text-white font-bold text-sm">{user.name.charAt(0).toUpperCase()}</span> */}
                       </div>
                       <div>
-                        <p className="text-purple-300 font-semibold">{user.name}</p>
-                        <p className="text-xs text-gray-400">{user.email}</p>
+                        {/* <p className="text-purple-300 font-semibold">{user.name}</p>
+                        <p className="text-xs text-gray-400">{user.email}</p> */}
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="text-xs text-gray-400">
-                        {post.createdAt ? new Date(post.createdAt).toLocaleDateString() : ""}
+                        {
+                        console.log("Post Created At:", post.createdAt);
+                        post.createdAt ? new Date(post.createdAt).toLocaleDateString() : ""}
                       </p>
                       <p className="text-xs text-gray-500">
                         {post.createdAt ? new Date(post.createdAt).toLocaleTimeString() : ""}
@@ -326,10 +330,14 @@ export function PostList() {
                         {/* Featured Image */}
                         {post.imageUrl && (
                           <div className="mt-4">
-                            <img 
-                              src={post.imageUrl} 
-                              alt="Post featured image" 
+                            <Image
+                              src={post.imageUrl}
+                              alt="Post featured image"
+                              width={800}
+                              height={300}
                               className="w-full max-h-48 rounded-xl object-cover border border-white/10 shadow-lg"
+                              style={{ objectFit: "cover", height: "12rem" }}
+                              unoptimized // Remove this if you want Next.js image optimization
                             />
                           </div>
                         )}
