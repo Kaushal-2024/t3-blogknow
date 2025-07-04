@@ -17,6 +17,12 @@ export const posts = createTable(
   (d) => ({
     id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
     name: d.varchar({ length: 256 }),
+    content: d.text(),
+    published: d.boolean().default(false),
+    views: d.integer().default(0),
+    publishedAt: d.timestamp({ withTimezone: true }),
+    imageUrl: d.varchar({ length: 512 }),
+    userId: d.integer().notNull().references(() => users.id),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -24,4 +30,17 @@ export const posts = createTable(
     updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
   }),
   (t) => [index("name_idx").on(t.name)],
+);
+
+export const users = createTable(
+  "user",
+  (d) => ({
+    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+    name: d.varchar({ length: 128 }),
+    email: d.varchar({ length: 256 }).unique(),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  })
 );
